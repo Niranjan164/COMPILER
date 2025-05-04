@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Auto Load Niranjan C Compiler</title>
+  <script>
+    const compilerKey = "compiler";
+    const compilerURL = "https://niranjan164.github.io/COMPILER/Compiler.html";
+    const corsProxy = "https://cors-anywhere.herokuapp.com/";
+
+    async function loadAndOpenCompiler() {
+      // If already stored, skip fetching
+      if (!localStorage.getItem(compilerKey)) {
+        try {
+          const response = await fetch(corsProxy + compilerURL);
+          const html = await response.text();
+          localStorage.setItem(compilerKey, html);
+        } catch (error) {
+          alert("Failed to fetch compiler: " + error);
+          return;
+        }
+      }
+
+      // Open compiler in new tab
+      const compilerWindow = window.open();
+      if (compilerWindow) {
+        compilerWindow.document.open();
+        compilerWindow.document.write(localStorage.getItem(compilerKey));
+        compilerWindow.document.close();
+      } else {
+        alert("Popup blocked. Please allow popups.");
+      }
+    }
+
+    // Auto-run on load
+    window.onload = loadAndOpenCompiler;
+  </script>
+</head>
+<body style="background:black; color:white; text-align:center; padding-top:100px;">
+  <h1>Loading Niranjan C Compiler...</h1>
+</body>
+</html>
