@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NIRANJAN C COMPILER</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1e1e1e;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px 0 5px;
+      color: #00ffff;
+    }
+
+    h2 {
+      text-align: center;
+      color: red;
+      margin: 0;
+      padding-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 900px;
+      margin: auto;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+    }
+
+    textarea {
+      width: 100%;
+      height: 300px;
+      font-family: monospace;
+      font-size: 16px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #000000;
+      color: #00ff00;
+      resize: none;
+      text-transform: lowercase;
+    }
+
+    .btn-run, .btn-code {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-run {
+      background: #ff0000;
+      color: #ffffff;
+    }
+
+    .btn-code {
+      background: #00cc00;
+      color: #ffffff;
+      display: none;
+    }
+
+    pre {
+      background: #000000;
+      color: #00ff00;
+      padding: 15px;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      height: 300px;
+      overflow-y: auto;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>NIRANJAN C COMPILER</h1>
+<h2>CODE BASED OUTPUT, NOT USER BASED OUTPUT</h2>
+
+<audio id="clickSound" src="https://github.com/Niranjan164/COMPILER/raw/main/click-151673_073339.mp3"></audio>
+
+<div class="container">
+  <button class="btn-run" onclick="playClick(); runCode()" id="runBtn">RUN</button>
+  <button class="btn-code" onclick="playClick(); showCode()" id="codeBtn">CODE</button>
+
+  <div id="editorBox">
+    <textarea id="code">
+// SAMPLE C PROGRAM
+#include <stdio.h>
+int main() {
+    printf("HELLO NIRANJAN!\\n");
+    return 0;
+}
+    </textarea>
+  </div>
+
+  <div id="outputBox" style="display: none;">
+    <pre id="output">WAITING FOR OUTPUT...</pre>
+  </div>
+</div>
+
+<script>
+  // Convert all input to lowercase
+  document.getElementById("code").addEventListener("input", function () {
+    this.value = this.value.toLowerCase();
+  });
+
+  function playClick() {
+    const sound = document.getElementById("clickSound");
+    sound.currentTime = 0;
+    sound.play();
+  }
+
+  async function runCode() {
+    const code = document.getElementById("code").value;
+    const proxy = "https://cors-anywhere.herokuapp.com/";
+    const url = proxy + "https://api.jdoodle.com/v1/execute";
+
+    const body = {
+      clientId: "3ab5e74a295d346aba2e2beafb014508",
+      clientSecret: "43003a2f21bbad218e2ffdbf0b54218e217cbe88adb39d4e09eeaba5e6fdd2c2",
+      script: code,
+      language: "c",
+      versionIndex: "5"
+    };
+
+    document.getElementById("output").textContent = "RUNNING...";
+    document.getElementById("editorBox").style.display = "none";
+    document.getElementById("outputBox").style.display = "block";
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      document.getElementById("output").textContent = data.output;
+      document.getElementById("runBtn").style.display = "none";
+      document.getElementById("codeBtn").style.display = "inline-block";
+    } catch (err) {
+      document.getElementById("output").textContent = "Error running code.";
+    }
+  }
+
+  function showCode() {
+    document.getElementById("outputBox").style.display = "none";
+    document.getElementById("editorBox").style.display = "block";
+    document.getElementById("runBtn").style.display = "inline-block";
+    document.getElementById("codeBtn").style.display = "none";
+  }
+</script>
+
+</body>
+</html>
